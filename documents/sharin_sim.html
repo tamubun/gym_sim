@@ -1,0 +1,402 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+  <meta content="text/html; charset=Shift_JIS" http-equiv="content-type">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <meta name="Author" content="tamubun">
+  <link rel="StyleSheet" type="text/css" href="style.css">
+  <title>車輪シミュレータ</title>
+</head>
+
+<body>
+<h1>車輪シミュレータ</h1>
+<table summary="Image"
+style="margin-left: auto; margin-right: auto; width: 80%; text-align: left; border-style: none;">
+<tbody>
+<tr>
+  <td><img alt="車輪" src="./sharin1.jpg" width="352" height="288"></td>
+  <td><img alt="抜き" src="sharin2.jpg" width="352" height="288"></td>
+</tr>
+<tr>
+  <td style="text-align: center;">押し</td>
+  <td style="text-align: center;">早く抜きすぎ</td>
+</tr>
+</tbody>
+</table>
+<p>
+物理エンジンとして、<a href="http://ode.org/">Open Dynamics Engine(ODE)</a>
+を利用して作った、車輪のシミュレータです。結構リアルに色々な動作を再現します。
+できるだけ本物の動作に近づくようにパラメータを調整しました
+が、まだ、逆車(逆手車輪)や、宙返りのあふりは未調整です。
+</p>
+<p>
+要望、質問等は、<a href="http://bunysmc.exblog.jp/">私のブログ</a>に
+お願いします。
+</p>
+
+<table summary="Contents"
+style="margin-left: auto; margin-right: auto; width: 80%; text-align: left; border-style: groove; border-width: 3;" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td style="vertical-align: top;">
+  <ul>
+    <li><a href="#download">ダウンロード</a></li>
+    <li><a href="#command">起動方法</a></li>
+    <li><a href="waza.html">技の例</a></li>
+  </ul>
+</td>
+<td style="vertical-align: top;">
+  <ul>
+    <li><a href="#usage">使い方</a>
+      <ul>
+        <li><a href="#start mode">スタートモード</a></li>
+        <li><a href="#sim mode">シミュレーションモード</a></li>
+        <li><a href="#video mode">ビデオモード</a></li>
+        <li><a href="#misc">その他</a></li>
+      </ul>
+    </li>
+  </ul>
+</td>
+<td style="vertical-align: top;">
+  <ul>
+    <li><a href="#so bad">サボっている点</a></li>
+    <li><a href="#TODO">近いうちにやりたい事</a></li>
+    <li><a href="#compile">コンパイルのやり方</a></li>
+    <li><a href="#updates">更新履歴</a></li>
+  </ul>
+</td>
+</tr>
+</tbody>
+</table>
+
+<h2><a name="download">ダウンロード</a></h2>
+<p>
+実行ファイルには、Windows用とLinux用とがあります。実行ファイルとは
+別にテクスチャーファイルが必要です。テクスチャーファイルは、
+<a href=
+"http://club.pep.ne.jp/~tamubun/computer/hineri_sim.html">捻りシミュレータ</a>にも
+共通して使えます。テクスチャーファイルが正しい場所にないとき
+は、<span style="color: red">"Error: Can't open image file ..."</span>という
+エラーが出ます
+</p>
+<table summary="Download" style="margin-left: auto; margin-right: auto; text-align: left; width: 90%;" border="1" cellpadding="4" cellspacing="2">
+<tbody>
+  <tr>
+    <td style="vertical-align: middle; width: 25%;">
+<a href=
+"http://club.pep.ne.jp/~tamubun/computer/sharin-0_4-linbin.lzh">sharin-0_4-linbin.lzh</a></td>
+    <td style="vertical-align: middle;">Linux用実行ファイル</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle; width: 25%;">
+<a href=
+"http://club.pep.ne.jp/~tamubun/computer/sharin-0_4-winbin.lzh">sharin-0_4-winbin.lzh</a></td>
+    <td style="vertical-align: middle;">Windows用実行ファイル</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle; width: 25%;">
+<a href=
+"http://club.pep.ne.jp/~tamubun/computer/textures.lzh">textures.lzh</a></td>
+    <td style="vertical-align: middle;">テクスチャー
+ファイル。Windows, Linux共通。解凍してできるtexturesディレクトリを
+実行ファイルと同じディレクトリに置いて下さい</td>
+  <tr>
+    <td style="vertical-align: middle; width: 25%;">
+<a href="http://club.pep.ne.jp/~tamubun/computer/gym_sim-0_4.lzh">gym_sim-0_4.lzh</a></td>
+    <td style="vertical-align: middle;">ソースファイル。捻り
+シミュレータのソースも入ってます。実行ファイルを自分で作るときに利用して下さい</td>
+  </tr>
+</tbody>
+</table>
+
+<h2><a name="command">起動方法</a></h2>
+<p>
+Windows版は、実行ファイルをダブルクリックするだけです。<br>
+Linux版は、コマンドラインから実行する時に以下のオプションを指定できます:
+</p>
+<dl>
+<dt><code>-notex</code></dt>
+<dd>テクスチャーなし</dd>
+<dt><code>-noshadow</code>
+<dd>影なし</dd>
+<dt><code>-framestep &lt;n&gt; (Linux専用)</code>
+<dd>画像キャプチャー時に、nコマ飛ばしにする</dd>
+</dl>
+
+<h2><a name="usage">使い方</a></h2>
+<p>
+起動すると、<a href="#start mode">スタートモード</a>で始まります。
+スタートモードで体の角度を指定したあと、
+スペースキーを押すと<a href="#sim mode">シミュレーションモード</a>に移ります。
+また、スタートモードかシミュレーションモードで、<code>"V"</code>キーを押すと、
+<a href="#video mode">ビデオモード</a>になり、動作の再生、保存、
+読み込みが行えます。
+</p>
+<table
+style="margin-left: auto; margin-right: auto; width: 600px; text-align: left;"
+border="1" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td style="vertical-align: top; text-align: center;"><img
+alt="start mode" src="start_mode.jpg"
+style="width: 177px; height: 190px;"><br>
+</td>
+<td style="vertical-align: top; text-align: center;"><img
+alt="simulation mode" src="simulation_mode.jpg"
+style="width: 177px; height: 190px;"><br>
+</td>
+<td style="vertical-align: top; text-align: center;"><img
+alt="video mode" src="video_mode.jpg"
+style="width: 177px; height: 190px;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: center;">スタートモード<br>
+</td>
+<td style="vertical-align: top; text-align: center;">シミュレーションモード<br>
+</td>
+<td style="vertical-align: top; text-align: center;">ビデオモード<br>
+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><a href="waza.html#sharin">順手車輪のやり方の例</a></li>
+<li><a href="waza.html#keagari">蹴上りのやり方の例</a></li>
+<li><a href="waza.html#hurisaka">振り逆上りのやり方の例</a></li>
+<li><a href="waza.html#huriagari">振り上りのやり方の例</a></li>
+</ul>
+<h3><a name="start mode">スタートモード</h3>
+<p>
+現在の車輪シミュレータは、振り出しの動作ができない
+ので、スイングを始める前に、体全体の角度を指定してやる必要があります。
+ここで指定する角度によって、正車や逆車(逆車はパラメータ調整中)をさせること
+ができます。
+尚、順手の逆手の区別は現在のところありません。
+</p>
+<p><strong>キー操作</strong></p>
+<dl>
+  <dt>スペース</dt>
+  <dd>シミュレーション実行。
+<a href="#sim mode">シミュレーションモード</a>になる</dd>
+  <dt><code>V</code></dt>
+  <dd><a href="#video mode">ビデオモード</a>に移行</dd>
+  <dt><code>a</code></dt>
+  <dd>後方に30度回す</dd>
+  <dt><code>q</code></dt>
+  <dd>後方に15度回す</dd>
+  <dt><code>s</code></dt>
+  <dd>前方に30度回す</dd>
+  <dt><code>w</code></dt>
+  <dd>前方に15度回す</dd>
+</dl>
+
+<h3><a name="sim mode">シミュレーションモード</h3>
+<p>
+好きなタイミングで反ったりあふったりして、動作を見て下さい。
+秒間約360コマでシミュレートします。
+地面は水なので、着地はできませんが、首から行っても大丈夫です。
+バーは、ゆっくり触れるときにはぶつかりますが、ある程度強くぶつかる場合はすり抜けます。
+</p>
+<p>
+動作にバリエーションが付いている場合には、動作キーを押す前に、
+そのバリエーションの数字(10キーは使えません)を押すことによって、
+少し違った動きをするようになります。例えば、<code>z</code>キーを
+押すと、白樺の姿勢で押しを行おうとしますが、
+<code>1z</code>と押すと、腰を取って押すようになります。
+</p>
+<p>
+又、動作を指定したあとに、<code>"+"</code>(プラス)キーや
+<code>"-"</code>(マイナス)キー
+を押すことによって、指定した動作や締めに使う力
+を微調整することができます。押しが弱いと思った時には、
+<code>z</code>キーを押してから、<code>"+"</code>キーを数回押して下さい。
+</p>
+<p>
+スペースキーを押すとポーズが掛かり、もう一度押すと再開されます。
+ポーズ中にも、次の動作の指定や力の微調整を行えます。
+又、動作には、押しや抜きのように、全身の姿勢を決める物と、首曲げや、
+膝曲げのように、体の一部だけを動かすだけのものとがあります。
+例えば、ポーズして、あふりキーのあとに膝曲げキーを押してやれば、
+膝を曲げたあふりを行うことができます。
+</p>
+<p><strong>キー操作(一般)</strong></p>
+<dl>
+  <dt><code>R</code></dt>
+  <dd>リセット。<a href="#start mode">スタートモード</a>に移行</dd>
+  <dt><code>V</code></dt>
+  <dd><a href="#video mode">ビデオモード</a>に移行</dd>
+  <dt>スペース</dt>
+  <dd>ポーズ、ポーズ解除。(<code>Ctrl-P</code>も同様)</dd>
+  <dt><code>+</code> (プラス、10キーのプラスは使えない)</dt>
+  <dd>動作に使う力、締めの力を増やす</dd>
+  <dt><code>-</code> (マイナス、10キーのマイナスは使えない)</dt>
+  <dd>動作に使う力、締めの力を減らす</dd>
+  <dt><code>Ctrl-o</code></dt>
+  <dd>ポーズ中にコマ送り</dd>  
+  <dt><code>Ctrl-w</code> (Linux専用)</dt>
+  <dd>画像キャプチャー on/off。実行プログラムのあるディレクトリに、
+frameというディレクトリを作っておくと、そこに、各コマごとに画像が
+キャプチャーされて保存されます。起動時に、<code>-framestep</code>オプ
+ションを指定すれば、指定したコマ飛ばしに保存されるようになります。
+</dd>  
+</dl>
+<p><strong>キー操作(動作)</strong></p>
+<dl>
+  <dt><code>z</code></dt>
+  <dd>押し(白樺)</dd>
+  <dd> (バリエーション <strong>1</strong>) 腰を取った押し</dd>
+  <dd> (バリエーション <strong>2</strong>) 胸の落ちた押し</dd>
+  <dt><code>q</code></dt>
+  <dd>抜き(意識的に反る)。バージョン0.2まではこっちがバリエーション1だった</dd>
+  <dd>(バリエーション <strong>1</strong>) 首と膝以外は脱力。こっちが正しいの
+か良く分からない</dd>
+  <dd>(バリエーション <strong>2</strong>) 肩に力が入りっぱなし</dd>
+  <dt><code>a</code></dt>
+  <dd>あふり
+  </dd>
+  <dt><code>s</code></dt>
+  <dd>胸を当てる</dd>
+  <dt><code>x</code></dt>
+  <dd>肩を出す(パラメータ調整中)</dd>
+  <dt><code>t</code></dt>
+  <dd>蹴上り前半。足をバーに引きよせる</dd>
+  <dt><code>y</code></dt>
+  <dd>蹴上り後半。蹴って脇を締める</dd>
+  <dt><code>r</code></dt>
+  <dd>完全に脱力</dd>
+  <dt>o</dt>
+  <dd>離手</dd>
+  <dt><code>h</code></dt>
+  <dd>膝曲げ。他の姿勢は変えない</dd>
+  <dd>(バリエーション <strong>1</strong>) 太股を前に出さない膝曲げ</dd>
+  <dd>(バリエーション <strong>2</strong>) 膝を伸ばす</dd>
+  <dt><code>k</code></dt>
+  <dd>首を起こす。他の姿勢は変えない</dd>
+  <dd>(バリエーション <strong>1</strong>) 首を入れる</dd>
+  <dd>(バリエーション <strong>2</strong>) 首をまっすぐに</dd>
+  <dt><code>u</code></dt>
+  <dd>腕を下げる。宙返りのときの姿勢制御用。他の姿勢は変えない</dd>
+  <dd>(バリエーション <strong>1</strong>) 腕を上げる</dd>
+</dl>
+<h3><a name="video mode">ビデオモード</h3>
+<p>
+このモードでは、<a href="#sim mode">シミュレーションモード</a>で行った
+動作の再生、及び、その動作をファイルに保存することができます。
+また、保存したファイルを読み込み、これを再生させることができます。
+ファイルの保存、読み込みのやり方は分かりにくいので、その内、
+ちゃんとダイアログを出すようにしたいと思います。
+</p>
+<p><strong>キー操作</strong></p>
+<dl>
+  <dt><code>R</code></dt>
+  <dd>リセット。<a href="#start mode">スタートモード</a>に移行</dd>
+  <dt>スペース</dt>
+  <dd>直前の<a href="#sim mode">シミュレーションモード</a>で行った動作、
+または、ファイルから読み込んだ動作を最初から再生</dd>
+  <dt><code>S</code></dt>
+  <dd>ファイルに現在の動作を保存。<code>"Save File Name: "</code>
+と聞いてくるので、そこにファイル名を記入して下さい
+  </dd>
+  <dt><code>L</code></dt>
+  <dd>ファイルに保存した動作を読み込む。<code>"Load File Name: "</code>
+と聞いてくるので、そこにファイル名を記入して下さい
+</dd>
+</dl>
+
+<h3><a name="misc">その他</a></h3>
+<p>全モード共通の操作です</p>
+<dl>
+  <dt><code>Ctrl-x</code></dt>
+  <dd>終了</dd>
+  <dt><code>Ctrl-t</code></dt>
+  <dd>テキスチャー表示 on/off</dd>
+  <dt><code>Ctrl-s</code></dt>
+  <dd>影表示 on/off</dd>
+  <dt><code>Ctrl-v</code> (Linux専用)</dt>
+  <dd>現在の視点の座標を表示</dd>
+  <dt>マウス(左、右、同時押し)ドラッグ</dt>
+  <dd>視点の切替え</dd>
+</dl>
+
+<h2><a name="so bad">サボっている点</a></h2>
+<ul>
+  <li><em>不安定。</em>スタートモードとビデオモードを切り替えたり、
+他のウィンドウをアクティブにしたりしている内に、落ちるときがあります
+(Linux版で確認)。</li>
+  <li><em>パラメータが変更できない。</em>体の各パーツの長さや関節の
+可動域などは作者の値(伸長178cm、柔軟も作者より少し軟らかめにした程度です。
+つまり、でかすぎ、硬すぎ)です。<br>
+バーのしなりの弾性や摩擦も適当に決めましたが、そこそこリアルなしなり方を
+しているので、極端には間違えていないと思います。
+  </li>
+  <li><em>肩がない。</em>これのせいで正しい抜きができません。</li>
+  <li><em>順手、逆手の区別がない。</em>バーの握り替えもないので、
+パイプで回っている感じですが、これは、どうやっていいかさっぱり分か
+りません。
+  </li>
+  <li><em>両手は同時にしか動かない。両足も同時にしか動かない。</em></li>
+  <li><em>関節の曲がる方向が変えられない。</em>現在は、全ての関節は、
+バーと平行な軸に対してしか曲がりません。</li>
+  <li><em>肘が曲げられない。</em>倒立の時に肘を曲げた車輪
+ができません。
+  </li>
+</ul>
+
+<h2><a name="TODO">近いうちにやりたい事</a></h2>
+<ul>
+  <li>翻転とか大振り上りとか</li>
+  <li>動作が増えて、操作がかなり難しくなってきたので、もう少し何とかする</li>
+  <li>パラメータの変更をできるようにする</li>
+  <li>ファイルの保存、読み込みのときなどに、ダイアログを使うようにする</li>
+</ul>
+
+<h2><a name="compile">コンパイルのやり方</a></h2>
+<p>
+ソースファイルからコンパイルする場合には、<a href="http://ode.org/">ODE</a>
+と、<a href="http://www.opengl.org/">OpenGL</a>が必要です。
+</p>
+<p>
+Makefile先頭の、<code>ODE_DIR</code>の部分を、ODEをビルドしたディレクトリ
+に書き換えて、<code>make</code>して下さい。捻りシミュレータも同時に
+作られます。
+</p>
+
+<h2><a name="updates">更新履歴</a></h2>
+<dl>
+<dt>Ver 0.4 (2005.12.25)</dt>
+<dd>
+- 動作の再生、保存、読み込みをできるようにした<br>
+- スタートモードの角度の微調整をできるようにした<br>
+- プログラムを少し整理した<br>
+- ソースファイル名を"gym_sym"でなく、"gym_sim"にした
+<dt>Ver 0.3 (2005.8.12)</dt>
+<dd>
+- 衝突判定を追加<br>
+- 実際の演技と見比べながら、パラメータを見直した(まだ途中)。蹴上り倒立は
+できなくなった<br>
+- 画像キャプチャー部分の修正(ポーズ中にはキャプチャーしないようにした)
+<dt>Ver 0.2 (2005.7.21)</dt>
+<dd>
+- 動作に使う力を微調整できるようにした<br>
+- 蹴上りできるようにした
+<dt>Ver 0.1 (2005.7.7)</dt>
+<dd>
+- スタートモードからスペースキーを押すと、すぐに人間がいなくなることがある
+バグを修正<br>
+- パラメータを多少修正
+</dd>
+<dt>Ver 0.0 (2005.6.20)</dt>
+<dd>
+- 公開
+</dd>
+</dl>
+
+<hr style="width: 100%; height: 3px;">
+<p style="text-align: center;">
+<a href="http://club.pep.ne.jp/~tamubun/">ホームへ</a>
+<a href="http://bunysmc.exblog.jp/">ブログへ</a>
+</p>
+
+</body>
+</html>

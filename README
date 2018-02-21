@@ -1,0 +1,13 @@
+捻りシミュレータ ver 0.3
+車輪シミュレータ ver 0.3
+     by たむぶん
+        http://club.pep.ne.jp/~tamubun/
+        http://bunysmc.exblog.jp/
+
+再配布/修正する場合は、ODEと同じく、LGPL、又は、BSDスタイルの
+いずれか好きなライセンスを選んで下さい。
+
+詳細は、documentsディレクトリの
+  ・hineri_sim.html
+  ・sharin_sim.html
+のいずれかを見て下さい。

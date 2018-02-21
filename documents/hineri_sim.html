@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+  <meta content="text/html; charset=Shift_JIS" http-equiv="content-type">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <meta name="Author" content="tamubun">
+  <link rel="StyleSheet" type="text/css" href="./style.css">
+  <title>捻りシミュレータ</title>
+</head>
+
+<body>
+<h1>捻りシミュレータ</h1>
+<table summary="Image"
+style="margin-left: auto; margin-right: auto; width: 80%; text-align: left; border-style: none;">
+<tbody>
+<tr>
+  <td><img alt="捻り" src="./hineri1.jpg" width="352" height="288"></td>
+  <td><img alt="角運動量" src="hineri2.jpg" width="352" height="288"></td>
+</tr>
+<tr>
+  <td style="text-align: center;">捻っている所</td>
+  <td style="text-align: center;">角運動量を表示</td>
+</tr>
+</tbody>
+</table>
+<p>
+捻りの物理を理解するために人間を単純化したシミュレータです。
+<a href="http://ode.org/">Open Dynamics Engine(ODE)</a>に付いていた
+サンプルプログラムを適当に書き換えて作っただけの、いい加減なプログラムです。
+要望、質問等は、<a href="http://bunysmc.exblog.jp/">私のブログ</a>に
+お願いします。
+</p>
+
+<h2>ダウンロード</h2>
+<p>
+実行ファイルには、Windows用とLinux用とがあります。実行ファイルとは
+別にテクスチャーファイルが必要です。テクスチャーファイルは、
+<a href=
+"http://club.pep.ne.jp/~tamubun/computer/sharin_sim.html">車輪シミュレータ</a>にも
+共通して使えます。テクスチャーファイルが正しい場所にないとき
+は、<span style="color: red">"Error: Can't open image file ..."</span>という
+エラーが出ます
+</p>
+<table summary="Download" style="margin-left: auto; margin-right: auto; text-align: left; width: 90%;" border="1" cellpadding="4" cellspacing="2">
+<tbody>
+  <tr>
+    <td style="vertical-align: middle; width: 25%;">
+<a href=
+"http://club.pep.ne.jp/~tamubun/computer/hineri-0_3-linbin.lzh">hineri-0_3-linbin.lzh</a></td>
+    <td style="vertical-align: middle;">Linux用実行ファイル</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle; width: 25%;">
+<a href=
+"http://club.pep.ne.jp/~tamubun/computer/hineri-0_3-winbin.lzh">hineri-0_3-winbin.lzh</a></td>
+    <td style="vertical-align: middle;">Windows用実行ファイル</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle; width: 25%;">
+<a href=
+"http://club.pep.ne.jp/~tamubun/computer/textures.lzh">textures.lzh</a></td>
+    <td style="vertical-align: middle;">テクスチャー
+ファイル。Windows, Linux共通。解凍してできるtexturesディレクトリを
+実行ファイルと同じディレクトリに置いて下さい</td>
+  <tr>
+    <td style="vertical-align: middle; width: 25%;">
+<a href="http://club.pep.ne.jp/~tamubun/computer/gym_sim-0_4.lzh">gym_sim-0_4.lzh</a></td>
+    <td style="vertical-align: middle;">ソースファイル。車輪
+シミュレータのソースも入ってます。実行ファイルを自分で作るときに利用して下さい</td>
+  </tr>
+</tbody>
+</table>
+
+<h2>走らせ方</h2>
+<p>
+Windows版は、実行ファイルをダブルクリックするだけです。<br>
+Linux版は、コマンドラインから実行する時に以下のオプションを指定できます:
+</p>
+<dl>
+<dt><code>-notex</code></dt>
+<dd>テクスチャーなし</dd>
+<dt><code>-noshadow</code>
+<dd>影なし</dd>
+<dt><code>-framestep &lt;n&gt; (Linux専用)</code>
+<dd>画像キャプチャー時に、nコマ飛ばしにする</dd>
+</dl>
+
+<h2>使い方</h2>
+<h3>基本操作</h3>
+<ul>
+<li>l/rキーを押すと、左手/右手が下がります。</li>
+<li>L/Rキーを押すと、左手/右手が上がります。</li>
+<li>Ctrl-Pで一時停止/再開できるので、その間に手を動かせば、
+両手同時に動かせます。</li>
+<li>sキーを押すと、回転がゆっくりになり、数回押せば止まります。
+元の速さには戻せません。</li>
+<li>mキーを押すと、全体の重心の回りの角運動量が表示されます。
+  <ul>
+  <li>黄: 体の角運動量</li>
+  <li>赤: 左手の角運動量</li>
+  <li>緑: 右手の角運動量</li>
+  <li>白: 全角運動量(黄、赤、緑の和。本来は、常に一定のはずですが
+誤差によってずれます)</li>
+  </ul>
+</li>
+</ul>
+<h3>その他の操作</h3>
+<dl>
+  <dt><code>Ctrl-x</code></dt>
+  <dd>終了</dd>
+  <dt><code>Ctrl-t</code></dt>
+  <dd>テキスチャー表示 on/off</dd>
+  <dt><code>Ctrl-s</code></dt>
+  <dd>影表示 on/off</dd>
+  <dt><code>Ctrl-v</code> (Linux専用)</dt>
+  <dd>現在の視点の座標を表示</dd>
+  <dt>マウス(左、右、同時押し)ドラッグ</dt>
+  <dd>視点の切替え</dd>
+</dl>
+
+<h2>コンパイルのやり方</h2>
+<p>
+ソースファイルからコンパイルする場合には、<a href="http://ode.org/">ODE</a>
+と、<a href="http://www.opengl.org/">OpenGL</a>が必要です。
+</p>
+<p>
+Makefile先頭の、<code>ODE_DIR</code>の部分を、ODEをビルドしたディレクトリ
+に書き換えて、<code>make</code>して下さい。車輪シミュレータも同時に
+作られます。
+</p>
+
+<h2><a name="updates">更新履歴</a></h2>
+<dl>
+<dt>Ver 0.3 (2005.6.20)</dt>
+<dd>
+- 車輪シミュレータとソースを共有するようにし始めた。<br>
+- 起動時に、<code>-framestep</code>オプションを指定できるようにした(Linux)。
+</dd>
+<dt>Ver 0.2a (2005.6.1)</dt>
+<dd>
+- 圧縮をlzh形式にした。
+</dd>
+<dt>Ver 0.2 (2005.6.1)</dt>
+<dd>
+- Windows用の実行ファイルを追加した。<br>
+- どこから実行してもよいようにした。
+</dd>
+<dt>Ver 0.1 (2005.5.29)</dt>
+<dd>
+- ソースプログラムと、実行プログラムを一つのアーカイブに集めることにした。<br>
+- 体や腕のパラメータを変更しやすくした。
+</dd>
+<dt>Ver 0.0 (2005.5.28)</dt>
+<dd>
+- 公開
+</dd>
+</dl>
+
+<hr style="width: 100%; height: 3px;">
+<p style="text-align: center;">
+<a href="http://club.pep.ne.jp/~tamubun/">ホームへ</a>
+<a href="http://bunysmc.exblog.jp/">ブログへ</a>
+</p>
+
+</body>
+</html>

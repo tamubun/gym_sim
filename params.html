@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+  <meta content="text/html; charset=Shift_JIS" http-equiv="content-type">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <meta name="Author" content="tamubun">
+  <title>パラメータ設定</title>
+
+<style>
+table {
+  position: absolute;top: 5em;
+  margin-left: auto; margin-right: auto;
+  width: 80%; text-align: left; border-style: none;
+}
+
+table.hidden { visibility: hidden; }
+table.visible { visibility: visible; }
+</style>
+
+<script>
+var param_sets = {};
+var table_elems = {};
+var ul_param_sets;
+var current_param_set;
+var values_elem;
+var form_elem;
+
+function get_values_elem(name)
+{
+  return document.getElementById("values-" + name);
+}
+
+function get_form_elem(name)
+{
+  return document.getElementById(name);
+}
+
+function append_param_sets(id, li)
+{
+  var param_select = document.getElementById("param_select");
+  var option = document.createElement("OPTION");
+  var tag = li.firstChild.nodeValue;
+  option.setAttribute("value", id);
+  option.appendChild(document.createTextNode(tag));
+  param_select.appendChild(document.createTextNode("\n"));
+  param_select.appendChild(option);
+
+  param_sets[id] = { elem: li, tag: tag };
+}
+
+function init_param_sets()
+{
+  ul_param_sets = document.getElementById("param_sets");
+
+  var param_select = document.getElementById("param_select");
+  var elem, next;
+  for ( elem = param_select.firstChild; elem; elem = next ) {
+    next = elem.nextSibling;
+    param_select.removeChild(elem);
+  }
+
+  var lis = ul_param_sets.getElementsByTagName("LI");
+  for ( var i = 0; i < lis.length; ++i )
+    append_param_sets(lis[i].id, lis[i]);
+}
+
+function show_hide_table(id, show)
+{
+  table_elems[id].setAttribute("class", show ? "visible" : "hidden");
+}
+
+function init_table_elems()
+{
+  var tables = document.getElementsByTagName("TABLE");
+
+  for ( var i = 0; i < tables.length; ++i ) {
+    var table = tables[i];
+    table_elems[table.id] = table;
+    show_hide_table(table.id, false);
+  }
+}
+
+function init()
+{
+  init_param_sets();
+  init_table_elems();
+
+  show_hide_table("main_table", true);
+
+  current_param_set = 0;
+  values_elem = get_values_elem(current_param_set);
+  form_elem = get_form_elem("bar_form");
+
+  var lis = values_elem.getElementsByTagName("LI");
+  for ( var i = 0; i < lis.length; ++i ) {
+    var li = lis[i];
+    values_elem[li.id] = li;
+    form_elem[li.id].value = li.firstChild.nodeValue;
+  }
+}
+
+function set_values()
+{
+  var inputs = form_elem.getElementsByTagName("INPUT");
+  for ( var i = 0; i < inputs.length; ++i ) {
+    var input = inputs.item(i);
+    values_elem[input.id].firstChild.nodeValue = input.value;
+  }
+}
+
+function copy_param_set()
+{
+  var tag = get_form_elem("main_form")["new_param_name"].value;
+  for ( var i = 0; i < 30; ++i ) {
+    if ( get_values_elem(i) || param_sets[i] )
+      continue;
+    var li = param_sets[current_param_set].elem.cloneNode(true);
+    li.id = i;
+    li.firstChild.nodeValue = tag;
+    ul_param_sets.appendChild(li);
+    ul_param_sets.appendChild(document.createTextNode("\n"));
+    append_param_sets(i, li);
+    break;
+  }
+
+  if ( i == 30 )
+    alert("パラメータは30個までしか登録できません");
+}
+
+</script>
+</head>
+
+<body onload="init();">
+<h1>パラメータ設定</h1>
+
+<form id="param_select_form">
+<select name="param_select" id="param_select" onchange="alert(this.value);">
+</select>
+</form>
+
+<form id="main_form">
+<table id="main_table">
+<tbody>
+  <tr>
+    <td>
+      <button type="button" onclick="copy_param_set()">パラメータ複製</button>
+    </td>
+    <td>パラメータ名</td>
+    <td><input type="text" name="new_param_name"></td>
+  </tr>
+  <tr>
+    <td>
+      <button type="button" onclick="delete_param_set()">パラメータ削除</button>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <button type="button" onclick="edit_param_set()">パラメータ編集</button>
+    </td>
+  </tr>
+</tbody>
+</table>
+</form>
+
+<form id="bar_form">
+<table id="bar_table">
+<tbody>
+<tr>
+  <td>バーの高さ</td>
+  <td><input type="text" id="bar_height"></td>
+</tr>
+<tr>
+  <td>バーの重さ</td>
+  <td><input type="text" id="bar_weight"></td>
+</tr>
+<tr>
+  <td><button type="button" onclick="set_values()">設定</button></td>
+</tr>
+</tbody>
+</table>
+</form>
+
+<ul id="param_sets">
+<li id="0">標準</li>
+<li id="1">たむぶん</li>
+</ul>
+
+<ul id="values-0">
+<li id="bar_height">1.55</li>
+<li id="bar_weight">10.0</li>
+</ul>
+
+<ul id="values-1">
+<li id="bar_height">155</li>
+<li id="bar_weight">100</li>
+</ul>
+
+</body>
+
+</html>
